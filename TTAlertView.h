@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@class RMHAlertView;
-@protocol RMHAlertViewDelegate <NSObject>
-- (void)alertView:(RMHAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
+@class TTAlertView;
+@protocol TTAlertViewDelegate <NSObject>
+- (void)alertView:(TTAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 @end
 @interface RMHAlertView : UIView
 
@@ -19,5 +19,5 @@
 
 - (void)show;
 
-@property (nonatomic,weak)id<RMHAlertViewDelegate> delegate;
+@property (nonatomic,weak)id<TTAlertViewDelegate> delegate;
 @end

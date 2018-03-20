@@ -6,9 +6,9 @@
 //  Copyright © 2016年 任梦晗. All rights reserved.
 //
 
-#import "RMHAlertView.h"
+#import "TTAlertView.h"
 
-@interface RMHAlertView()
+@interface TTAlertView()
 @property (nonatomic,copy) NSString *alertTitle;
 @property (nonatomic,copy) NSString *content;
 @property (nonatomic,strong) UIImage *promptImage;
@@ -17,7 +17,7 @@
 @property (nonatomic,strong) NSMutableArray *otherBtns;
 @property (nonatomic,strong) UIView *backView;
 @end
-@implementation RMHAlertView
+@implementation TTAlertView
 {
     UIImageView *_titleImage;
     UILabel *_alertTitleLb;
@@ -35,19 +35,22 @@
         self.cancleButtonTitle = cancleButton;
         self.otherBtnsArr = [NSMutableArray array];
         id eachObject;
+        
         va_list argumentList;
-        if (otherButtons) // The first argument isn't part of the varargs list,
-        {                                   // so we'll handle it separately.
+        if (otherButtons)
+        {
             [self.otherBtnsArr addObject: otherButtons];
-            va_start(argumentList, otherButtons); // Start scanning for arguments after otherButtons.
-            while ((eachObject = va_arg(argumentList, id))) // As many times as we can get an argument of type "id"
+            va_start(argumentList, otherButtons);
+            
+            while ((eachObject = va_arg(argumentList, id)))
+                
                 [self.otherBtnsArr addObject: eachObject]; // that isn't nil, add it to self's contents.
             va_end(argumentList);
         }
-       
+        
         [self setup];
         
-       
+        
     }
     return self;
 }
@@ -70,48 +73,79 @@
         [_contentLb setFrame:CGRectMake(10 ,_alertTitle.length>0?CGRectGetMaxY(_alertTitleLb.frame)+margin:CGRectGetMaxY(_titleImage.frame)+margin, self.width-20, labelsize.height)];
     }
     
-    CGFloat width = (ScreenWidth-60)/_otherBtns.count;
+    CGFloat width = (SCREEN_WIDTH-60)/_otherBtns.count;
     CGFloat heitht = 40;
     for (int i=0; i<_otherBtns.count; i++) {
         UIButton *btn = _otherBtns[i];
         btn.frame = CGRectMake(i*width, CGRectGetMaxY(_contentLb.frame)+3*margin, width, heitht);
     }
     _line.frame = CGRectMake(0, CGRectGetMaxY(_contentLb.frame)+3*margin, self.width, 1);
-    self.frame = CGRectMake(0, 0, ScreenWidth-60,_cancleBtn.frame.origin.y+40);
-    self.center = CGPointMake(ScreenWidth/2, ScreenHeight/2);
+    self.frame = CGRectMake(0, 0, SCREEN_WIDTH-60,_cancleBtn.frame.origin.y+40);
+    self.center = CGPointMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
     self.layer.borderColor = [UIColor blackColor].CGColor;
     self.layer.borderWidth = 2.0;
-   
+    
 }
 - (void)show {
-    _backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    
+    _backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     _backView.backgroundColor = [UIColor blackColor];
     _backView.alpha = 0.3;
     [[UIApplication sharedApplication].keyWindow addSubview:_backView];
     [[UIApplication sharedApplication].keyWindow addSubview:self];
-//    [[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:_backView];
-//    [[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:self];
-//    self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
-    [UIView animateWithDuration:0.3 animations:^{
-     
-        self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.3 animations:^{
-            
-            self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1.1,1.1);
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.3 animations:^{
-                
-                self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
-            } completion:^(BOOL finished) {
-                
-            }];
-        }];
-    }];
+    //    [[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:_backView];
+    //    [[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:self];
+    //    self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
+    //    [UIView animateWithDuration:0.3 animations:^{
+    //        self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
+    //    }];
+    //    [UIView animateWithDuration:0.3 animations:^{
+    //        self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
+    //    } completion:^(BOOL finished) {
+    //        [UIView animateWithDuration:0.3 animations:^{
+    //
+    //            self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1.1,1.1);
+    //        } completion:^(BOOL finished) {
+    //            [UIView animateWithDuration:0.3 animations:^{
+    //
+    //                self.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
+    //            } completion:^(BOOL finished) {
+    //                [self layoutSubviews];
+    //            }];
+    //        }];
+    //    }];
     
+    [UIView beginAnimations:@"" context:nil];   //开始动画
+    [UIView setAnimationDelegate:self];
+    CGAffineTransform curent =  self.transform;
+    CGAffineTransform scale = CGAffineTransformScale(curent, 0.8,0.8);
+    [UIView setAnimationDuration:0.3];
+    [self setTransform:scale];
+    [UIView commitAnimations];  //结束动画
+    
+    [UIView beginAnimations:@"" context:nil];   //开始动画
+    [UIView setAnimationDelegate:self];
+    CGAffineTransform curent1 =  self.transform;
+    CGAffineTransform scale1 = CGAffineTransformScale(curent1, 1.1,1.1);
+    [UIView setAnimationDuration:0.3];
+    [self setTransform:scale1];
+    [UIView commitAnimations];
+    
+    
+    //    [UIView beginAnimations:@"" context:nil];   //开始动画
+    //    [UIView setAnimationDelegate:self];
+    //    CGAffineTransform curent2 =  self.transform;
+    //    CGAffineTransform scale2 = CGAffineTransformScale(curent2, 1,1);
+    //    [UIView setAnimationDuration:0.3];
+    //    [self setTransform:scale2];
+    //    [UIView commitAnimations];  //结束动画
+    
+    self.transform = CGAffineTransformIdentity;
 }
 - (void)setup
 {
+    //    self.frame = CGRectMake(0, 0, SCREEN_WIDTH-60,_cancleBtn.frame.origin.y+40);
+    
     self.otherBtns = [NSMutableArray array];
     self.backgroundColor = [UIColor whiteColor];
     _titleImage = [[UIImageView alloc] init];
@@ -138,7 +172,7 @@
         _contentLb = [[UILabel alloc] init];
         _contentLb.text = _content;
         _contentLb.numberOfLines = 0;
-         _contentLb.font = [UIFont systemFontOfSize:16];
+        _contentLb.font = [UIFont systemFontOfSize:16];
         _contentLb.textAlignment = NSTextAlignmentCenter;
     }
     if (_cancleButtonTitle == nil) {
@@ -163,7 +197,7 @@
             [btn addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
-
+    
     _line = [[UILabel alloc] init];
     _line.backgroundColor = [UIColor blackColor];
     [self addSubview:_line];
@@ -177,20 +211,21 @@
     UIFont *font = [UIFont systemFontOfSize:16];
     CGSize size = CGSizeMake(self.width-20,MAXFLOAT);
     CGSize labelsize = [s sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-    self.frame = CGRectMake(0, 0, ScreenWidth-60,margin + _titleImage.image.size.height +margin +30+margin + labelsize.height +3*margin +40 +20);
-    self.center = CGPointMake(ScreenWidth/2, ScreenHeight/2);
+    self.frame = CGRectMake(0, 0, SCREEN_WIDTH-60,margin + _titleImage.image.size.height +margin +30+margin + labelsize.height +3*margin +40 +20);
+    self.center = CGPointMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
     
     
 }
 - (void)buttonClick:(UIButton *)button
 {
-
+    
     if ([self.delegate respondsToSelector:@selector(alertView:clickedButtonAtIndex:)]) {
         [self.delegate alertView:self clickedButtonAtIndex:button.tag];
         
-      
+        
     }
     [self removeFromSuperview];
     [_backView removeFromSuperview];
 }
 @end
+
